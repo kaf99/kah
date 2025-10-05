@@ -11,6 +11,9 @@ gem "spree_paypal_checkout", "~> 0.5"
 gem 'spree_razorpay_checkout', git: 'https://github.com/kaf99/spree_razorpay.git', branch: 'main'
 gem 'spree_product_reviews', git: 'https://github.com/kaf99/spree_product_reviews.git', branch: 'main'
 
+# --- Search ---
+gem 'searchkick'                # Elasticsearch integration
+
 #email-marketing
 gem 'postmark-rails'
 
