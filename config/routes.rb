@@ -1,8 +1,21 @@
-require "sidekiq/web" # require the web UI
+require "sidekiq/web"
 
 Rails.application.routes.draw do
+  # ✅ Health check endpoint
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # ✅ Sidekiq dashboard
+  mount Sidekiq::Web => "/sidekiq"
+
+  # ✅ Razorpay payment routes
+  namespace :razorpay do
+    post "checkout", to: "razorpay#checkout"
+    post "callback", to: "razorpay#callback"
+  end
+
+  # ✅ Spree routes and authentication setup
   Spree::Core::Engine.add_routes do
-    # Storefront routes
+    # Storefront user authentication
     scope '(:locale)', locale: /#{Spree.available_locales.join('|')}/, defaults: { locale: nil } do
       devise_for(
         Spree.user_class.model_name.singular_route_key,
@@ -30,24 +43,10 @@ Rails.application.routes.draw do
       router_name: :spree
     )
   end
-  # This line mounts Spree's routes at the root of your application.
-  # This means, any requests to URLs such as /products, will go to
-  # Spree::ProductsController.
-  # If you would like to change where this engine is mounted, simply change the
-  # :at option to something different.
-  #
-  # We ask that you don't use the :as option here, as Spree relies on it being
-  # the default of "spree".
+
+  # ✅ Mount Spree engine (main storefront + admin)
   mount Spree::Core::Engine, at: '/'
 
-  mount Sidekiq::Web => "/sidekiq" # access it at http://localhost:3000/sidekiq
-
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # Defines the root path route ("/")
+  # ✅ Default root path (Spree home)
   root "spree/home#index"
 end
