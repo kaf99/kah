@@ -63,27 +63,12 @@ Rails.application.configure do
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
   config.active_job.queue_adapter = :sidekiq
-
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
-
-  # Set host to be used by links generated in mailer templates.
-  # config.action_mailer.default_url_options = { host: "example.com" }
-
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
-  if ENV['SENDGRID_API_KEY'].present?
-    config.action_mailer.smtp_settings = {
-      user_name: 'apikey', # This is the string literal 'apikey', NOT the ID of your API key
-      password: ENV['SENDGRID_API_KEY'], # This is the secret sendgrid API key which was issued during API key creation
-      domain: ENV.fetch('SENDGRID_DOMAIN', Rails.application.routes.default_url_options[:host]),
-      address: 'smtp.sendgrid.net',
-      port: 587,
-      authentication: :plain,
-      enable_starttls_auto: true
-    }
-  end
-
+  
+  # Enable asset host so images, JS, CSS use correct domain
+  config.action_controller.asset_host = "https://www.nozfragrances.com"
+  Rails.application.routes.default_url_options[:host] = "www.nozfragrances.com"
+  Rails.application.routes.default_url_options[:protocol] = "https"
+  
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
   config.i18n.fallbacks = true
@@ -94,6 +79,28 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
 
+  # Ignore bad email addresses and do not raise email delivery errors.
+  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
+  # config.action_mailer.raise_delivery_errors = false
+  # Set host to be used by links generated in mailer templates.
+  # config.action_mailer.default_url_options = { host: "example.com" }
+  
+  # Use Postmark for email delivery
+  config.action_mailer.delivery_method = :postmark
+
+  config.action_mailer.postmark_settings = {
+  api_token: ENV['POSTMARK_API_TOKEN'] # we’ll add this variable next
+  }
+
+  # Default URL options for emails
+  config.action_mailer.default_url_options = {
+  host: "www.nozfragrances.com",
+  protocol: "https"
+  }
+
+  # Raise errors if emails fail (for debugging)
+  config.action_mailer.raise_delivery_errors = true
+  
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
