@@ -92,16 +92,8 @@ Rails.application.configure do
   
   # Use Postmark for email delivery
   config.action_mailer.delivery_method = :postmark
-
-  config.action_mailer.postmark_settings = {
-  api_token: ENV['POSTMARK_API_TOKEN'] # we’ll add this variable next
-  }
-
-  # Default URL options for emails
-  config.action_mailer.default_url_options = {
-  host: "www.nozfragrances.com",
-  protocol: "https"
-  }
+  config.action_mailer.postmark_settings = { api_token: ENV["POSTMARK_API_TOKEN"] }
+  config.action_mailer.default_url_options = { host: 'nozfragrances.com', protocol: 'https' }
 
   # Raise errors if emails fail (for debugging)
   config.action_mailer.raise_delivery_errors = true
