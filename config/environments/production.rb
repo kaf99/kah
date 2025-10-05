@@ -21,11 +21,6 @@ Rails.application.configure do
   config.assume_ssl = true
   config.force_ssl = true
 
-  # Razorpay payment Gateway
-  config.after_initialize do
-    Spree::Config[:razorpay_enabled] = true
-  end
-
   # Logging setup
   config.log_tags = [:request_id]
   config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
