@@ -13,8 +13,9 @@ gem 'razorpay'
 gem 'spree_product_reviews', git: 'https://github.com/kaf99/spree_product_reviews.git', branch: 'main'
 
 # --- Search ---
-gem 'elasticsearch', '~> 8.10' # compatible with Searchkick latest
-gem 'searchkick', '~> 7.5'
+gem 'elasticsearch', '~> 8.10' 
+gem 'searchkick', '~> 5.5'
+
 
 #email-marketing
 gem 'postmark-rails'
