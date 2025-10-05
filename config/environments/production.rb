@@ -1,12 +1,8 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
-
   # Code is not reloaded between requests.
   config.enable_reloading = false
-
-  # Eager load code on boot for better performance and memory savings (ignored by Rake tasks).
   config.eager_load = true
 
   # Full error reports are disabled.
@@ -15,95 +11,61 @@ Rails.application.configure do
   # Turn on fragment caching in view templates.
   config.action_controller.perform_caching = true
 
-  # Cache assets for far-future expiry since they are all digest stamped.
+  # Cache assets for far-future expiry.
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
-  # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  # config.asset_host = "http://assets.example.com"
-
-  # Store uploaded files on the local file system (see config/storage.yml for options).
+  # Store uploaded files locally (change to :amazon later if using S3).
   config.active_storage.service = :local
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
+  # SSL configuration
   config.assume_ssl = true
-
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
 
   # Razorpay payment Gateway
   config.after_initialize do
-  Spree::Config[:razorpay_enabled] = true
+    Spree::Config[:razorpay_enabled] = true
   end
-  
-  # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
-  # Log to STDOUT with the current request id as a default log tag.
-  config.log_tags = [ :request_id ]
-  config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
-
-  # Change to "debug" to log everything (including potentially personally-identifiable information!)
+  # Logging setup
+  config.log_tags = [:request_id]
+  config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
-
-  # Prevent health checks from clogging up the logs.
   config.silence_healthcheck_path = "/up"
-
-  # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  # https://guides.rubyonrails.org/caching_with_rails.html#activesupport-cache-rediscachestore
+  # Caching setup
   if ENV['REDIS_CACHE_URL'].present?
-    cache_servers = ENV['REDIS_CACHE_URL'].split(',') # if multiple instances are provided
+    cache_servers = ENV['REDIS_CACHE_URL'].split(',')
     config.cache_store = :redis_cache_store, {
       url: cache_servers,
-      connect_timeout:    30,  # Defaults to 1 second
-      read_timeout:       0.2, # Defaults to 1 second
-      write_timeout:      0.2, # Defaults to 1 second
-      reconnect_attempts: 2,   # Defaults to 1
+      connect_timeout: 30,
+      read_timeout: 0.2,
+      write_timeout: 0.2,
+      reconnect_attempts: 2,
     }
   else
     config.cache_store = :memory_store
   end
 
-  # Replace the default in-process and non-durable queuing backend for Active Job.
+  # Background jobs
   config.active_job.queue_adapter = :sidekiq
-  
-  # Enable asset host so images, JS, CSS use correct domain
+
+  # Host configuration
   config.action_controller.asset_host = "https://www.nozfragrances.com"
   Rails.application.routes.default_url_options[:host] = "www.nozfragrances.com"
   Rails.application.routes.default_url_options[:protocol] = "https"
-  
-  # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
-  # the I18n.default_locale when a translation cannot be found).
+
+  # I18n fallback
   config.i18n.fallbacks = true
 
-  # Do not dump schema after migrations.
+  # Database
   config.active_record.dump_schema_after_migration = false
+  config.active_record.attributes_for_inspect = [:id]
 
-  # Only use :id for inspections in production.
-  config.active_record.attributes_for_inspect = [ :id ]
-
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
-  # Set host to be used by links generated in mailer templates.
-  # config.action_mailer.default_url_options = { host: "example.com" }
-  
-  # Use Postmark for email delivery
+  # Mailer (Postmark)
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = { api_token: ENV["POSTMARK_API_TOKEN"] }
   config.action_mailer.default_url_options = { host: 'nozfragrances.com', protocol: 'https' }
-
-  # Raise errors if emails fail (for debugging)
+  config.action_mailer.asset_host = 'https://www.nozfragrances.com'
   config.action_mailer.raise_delivery_errors = true
-  
-  # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  #
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
