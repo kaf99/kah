@@ -1,4 +1,7 @@
+# Ensure Elasticsearch client is loaded before Searchkick
+require 'elasticsearch'
+
 Searchkick.client = Elasticsearch::Client.new(
-  url: ENV.fetch("ELASTICSEARCH_URL", "http://localhost:9200"),
-  transport_options: { request: { timeout: 250 } }
+  url: ENV['ELASTICSEARCH_URL'] || 'http://localhost:9200', # Use env in production
+  log: true
 )
