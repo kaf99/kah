@@ -15,7 +15,7 @@ Rails.application.configure do
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
   # Store uploaded files locally (change to :amazon later if using S3).
-  # config.active_storage.service = :local
+  config.active_storage.service = :local
   config.active_storage.service = :backblaze
 
   # SSL configuration
