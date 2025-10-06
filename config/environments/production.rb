@@ -43,6 +43,13 @@ Rails.application.configure do
     config.cache_store = :memory_store
   end
 
+  # blackbaze block till end if not work then delete
+  if ENV['SKIP_S3_VALIDATION'] == 'true'
+  puts "⚙️ Skipping S3 validation during assets precompile"
+  else
+  Rails.application.config.active_storage.service = :backblaze
+  end
+  
   # Background jobs
   config.active_job.queue_adapter = :sidekiq
 
