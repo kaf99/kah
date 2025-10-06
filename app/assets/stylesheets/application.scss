@@ -1,5 +1,5 @@
-@import 'global/variables';
-@import 'bootstrap';
-@import 'components/navbar';
-@import 'components/tables';
-@import 'components/badges';
+@use 'global/variables';
+@use 'bootstrap';
+@use 'components/navbar';
+@use 'components/tables';
+@use 'components/badges';
