@@ -16,7 +16,7 @@ Rails.application.configure do
 
   # Store uploaded files locally (change to :amazon later if using S3).
   config.active_storage.service = :local
-  config.active_storage.service = :backblaze
+  # config.active_storage.service = :backblaze
 
   # SSL configuration
   config.assume_ssl = true
@@ -44,11 +44,11 @@ Rails.application.configure do
   end
 
   # blackbaze block till end if not work then delete
-  if ENV['SKIP_S3_VALIDATION'] == 'true'
-  puts "⚙️ Skipping S3 validation during assets precompile"
-  else
-  Rails.application.config.active_storage.service = :backblaze
-  end
+  # if ENV['SKIP_S3_VALIDATION'] == 'true'
+  # puts "⚙️ Skipping S3 validation during assets precompile"
+  # else
+  #Rails.application.config.active_storage.service = :backblaze
+  # end
   
   # Background jobs
   config.active_job.queue_adapter = :sidekiq
