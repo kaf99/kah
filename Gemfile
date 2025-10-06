@@ -16,6 +16,7 @@ gem 'spree_product_reviews', git: 'https://github.com/kaf99/spree_product_review
 gem 'elasticsearch', '~> 8.10' 
 gem 'searchkick', '~> 5.5'
 
+gem "aws-sdk-s3", "~> 1.141"
 
 #email-marketing
 gem 'postmark-rails'
