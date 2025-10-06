@@ -23,6 +23,8 @@ gem 'postmark-rails'
 
 gem 'dartsass-rails', '0.5.1'
 
+gem 'sassc-rails'
+
 # JS + Hotwire
 gem "importmap-rails"
 gem "turbo-rails"
