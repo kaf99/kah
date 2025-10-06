@@ -37,9 +37,9 @@ RUN bundle config set frozen false && \
 COPY . .
 
 # Precompile assets without RAILS_MASTER_KEY
-# RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 # for blackbaze - if not working the delete below line and remove hash to restore above line
-RUN RAILS_ENV=production SKIP_S3_VALIDATION=true SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+# RUN RAILS_ENV=production SKIP_S3_VALIDATION=true SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
 # Final stage for app image
