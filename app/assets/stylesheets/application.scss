@@ -1,0 +1,10 @@
+// app/assets/stylesheets/application.scss
+
+// Spree Admin styles
+@import "spree/admin/application";
+
+// Your custom styles
+@import "custom/global";
+@import "custom/navbar";
+@import "custom/tables";
+@import "custom/badges";
