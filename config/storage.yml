@@ -6,7 +6,6 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-
 backblaze:
   service: S3
   access_key_id: <%= ENV["B2_KEY_ID"] %>
@@ -14,7 +13,7 @@ backblaze:
   region: eu-central-003
   bucket: nozstore
   endpoint: https://s3.eu-central-003.backblazeb2.com
-  force_path_style: true
+# force_path_style: true
 
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
