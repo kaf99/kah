@@ -1,10 +1,10 @@
-class Spree::User < Spree.base_class
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+# app/models/spree/user.rb
+# Include default devise modules. Others available are:
+# :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+class Spree::User < Spree::Base
   devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :validatable, :invitable,
+         :recoverable, :rememberable, :validatable, :invitable
 
-  # Spree modules
   include Spree::UserAddress
   include Spree::UserMethods
   include Spree::UserPaymentSource
