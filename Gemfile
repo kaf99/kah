@@ -16,6 +16,9 @@ gem 'spree_product_reviews', git: 'https://github.com/kaf99/spree_product_review
 gem 'elasticsearch', '~> 8.10' 
 gem 'searchkick', '~> 5.5'
 
+#Product combo offer
+gem 'spree_product_assembly', github: 'spree-contrib/spree-product-assembly', branch: 'main'
+
 gem "aws-sdk-s3", "~> 1.141"
 
 #email-marketing
