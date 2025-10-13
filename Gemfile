@@ -17,7 +17,7 @@ gem 'elasticsearch', '~> 8.10'
 gem 'searchkick', '~> 5.5'
 
 #Product combo offer
-gem 'spree_product_assembly', github: 'spree-contrib/spree-product-assembly', branch: 'main'
+gem 'spree-product-assembly', github: 'spree-contrib/spree-product-assembly', branch: 'master'
 
 gem "aws-sdk-s3", "~> 1.141"
 
