@@ -23,5 +23,3 @@ module Spree
     end
   end
 end
-
-Spree::Search::Base.prepend(Spree::Search::BaseDecorator)
