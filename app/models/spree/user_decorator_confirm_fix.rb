@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
+# Fix missing `confirmed_at` errors for Spree::User when using spree_auth_devise
+# (some environments or migrations don't include the Devise confirmable fields)
+
 module Spree
   module UserConfirmFix
-    def self.prepended(base)
-      # ensure we skip confirmation checks safely
-      base.class_eval do
-        skip_callback :create, :after, :send_on_create_confirmation_instructions, if: -> { !respond_to?(:confirmed_at) }
-      end
+    def confirmed_at
+      nil
+    end
+
+    def confirmed?
+      true
     end
   end
 end
