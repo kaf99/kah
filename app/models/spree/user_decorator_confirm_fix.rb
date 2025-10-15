@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 # Fix missing `confirmed_at` errors for Spree::User when using spree_auth_devise
-# (some environments or migrations don't include the Devise confirmable fields)
+# This avoids NameError or Confirmable callback issues during build.
 
 module Spree
-  module UserConfirmFix
+  module UserDecoratorConfirmFix
     def confirmed_at
       nil
     end
@@ -15,4 +15,4 @@ module Spree
   end
 end
 
-Spree::User.prepend(Spree::UserConfirmFix)
+Spree::User.prepend(Spree::UserDecoratorConfirmFix)
