@@ -43,13 +43,6 @@ Rails.application.configure do
     config.cache_store = :memory_store
   end
 
-  # blackbaze block till end if not work then delete
-  # if ENV['SKIP_S3_VALIDATION'] == 'true'
-  # puts "⚙️ Skipping S3 validation during assets precompile"
-  # else
-  #Rails.application.config.active_storage.service = :backblaze
-  # end
-  
   # Background jobs
   config.active_job.queue_adapter = :sidekiq
 
@@ -65,10 +58,22 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
   config.active_record.attributes_for_inspect = [:id]
 
-  # Mailer (Postmark)
-  config.action_mailer.delivery_method = :postmark
-  config.action_mailer.postmark_settings = { api_token: ENV["POSTMARK_API_TOKEN"] }
+  # -------------------------------
+  # Mailer (SendGrid SMTP)
+  # -------------------------------
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.sendgrid.net',
+    port:                 587,
+    domain:               'nozfragrances.com',
+    user_name:            'apikey',                # literal 'apikey'
+    password:             ENV['SENDGRID_API_KEY'], # from your sendgrid.env
+    authentication:       :plain,
+    enable_starttls_auto: true
+  }
+
   config.action_mailer.default_url_options = { host: 'nozfragrances.com', protocol: 'https' }
   config.action_mailer.asset_host = 'https://www.nozfragrances.com'
   config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.perform_deliveries = true
 end
