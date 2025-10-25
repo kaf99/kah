@@ -21,6 +21,7 @@ gem "aws-sdk-s3", "~> 1.141"
 #email-marketing
 gem 'postmark-rails'
 gem 'devise_invitable', '~> 2.0'
+gem 'sendgrid-ruby'
 
 gem 'dartsass-rails', '0.5.1'
 
