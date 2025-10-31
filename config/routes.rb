@@ -13,6 +13,9 @@ Rails.application.routes.draw do
     post "callback", to: "razorpay#callback"
   end
 
+  # ✅ Direct callback route (needed for Spree controller)
+  post '/razorpay/callback', to: 'spree/razorpay#razor_response'
+
   # ✅ Spree routes and authentication setup
   Spree::Core::Engine.add_routes do
     # Storefront user authentication
