@@ -8,13 +8,11 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => "/sidekiq"
 
   # ✅ Razorpay payment routes
-  namespace :razorpay do
-    post "checkout", to: "razorpay#checkout"
-    post "callback", to: "razorpay#callback"
-  end
+  # Checkout endpoint for gateway
+  post "/razorpay/checkout", to: "razorpay#checkout"
 
-  # ✅ Direct callback route (needed for Spree controller)
-  post '/razorpay/callback', to: 'spree/razorpay#razor_response'
+  # Callback endpoint for Spree to process order
+  post "/razorpay/callback", to: "spree/razorpay#razor_response"
 
   # ✅ Spree routes and authentication setup
   Spree::Core::Engine.add_routes do
