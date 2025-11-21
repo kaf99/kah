@@ -44,7 +44,7 @@ RUN apt-get update -qq && \
 RUN gem install bundler -v 2.6.5
 
 # Copy Gemfile and install gems
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile Gemfile.lock ./ 
 RUN bundle config set frozen false && \
     bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
