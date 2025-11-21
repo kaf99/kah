@@ -53,7 +53,7 @@ RUN bundle config set frozen false && \
 COPY . .
 
 # Precompile assets (using dummy secret key)
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE=1 ./bin/rails assets:precompile
 
 # ------------------------------------------------------------
 # Final stage (slim image for running app)
