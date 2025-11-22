@@ -1,79 +1,81 @@
 # syntax = docker/dockerfile:1
 
-# Base image with Ruby
+############################################################
+# BASE IMAGE (Ruby + system dependencies)
+############################################################
 ARG RUBY_VERSION=3.3.0
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+FROM ruby:$RUBY_VERSION-slim AS base
+
+# Install OS-level packages
+RUN apt-get update -qq && apt-get install --no-install-recommends -y \
+    build-essential \
+    git \
+    libpq-dev \
+    postgresql-client \
+    libvips \
+    nodejs \
+    npm \
+    yarn \
+    curl \
+    libjemalloc2 \
+    redis-tools \
+    ca-certificates \
+    gnupg \
+    dirmngr && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV RAILS_ENV=production \
+    BUNDLE_DEPLOYMENT=1 \
+    BUNDLE_PATH="/usr/local/bundle" \
+    MALLOC_ARENA_MAX=2 \
+    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 
 WORKDIR /rails
 
-# Install base packages
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-        curl \
-        libjemalloc2 \
-        postgresql-client \
-        libpq-dev \
-        libvips \
-        redis-tools \
-        ca-certificates \
-        gnupg \
-        dirmngr && \
-    rm -rf /var/lib/apt/lists/*
-
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle"
-
-# ------------------------------------------------------------
-# Build stage (for compiling assets)
-# ------------------------------------------------------------
+############################################################
+# BUILD STAGE (Install gems + precompile assets)
+############################################################
 FROM base AS build
-
-# Install build dependencies
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y \
-        build-essential \
-        git \
-        pkg-config \
-        nodejs \
-        npm \
-        yarn && \
-    rm -rf /var/lib/apt/lists/*
 
 # Install correct bundler version
 RUN gem install bundler -v 2.6.5
 
-# Copy Gemfile and install gems
-COPY Gemfile Gemfile.lock ./ 
-RUN bundle config set frozen false && \
-    bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+# Copy gem declarations first
+COPY Gemfile Gemfile.lock ./
 
-# Copy application code
+RUN bundle config set frozen false && \
+    bundle config set without 'development test' && \
+    bundle install && \
+    rm -rf ~/.bundle "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+
+# Copy app source
 COPY . .
 
-# Precompile assets (using dummy secret key)
-RUN SECRET_KEY_BASE=1 ./bin/rails assets:precompile
+# Precompile assets (use safe dummy key)
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-# ------------------------------------------------------------
-# Final stage (slim image for running app)
-# ------------------------------------------------------------
+############################################################
+# FINAL RUNTIME STAGE
+############################################################
 FROM base
 
-# Copy gems and application code from build stage
-COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+# Copy Ruby gems
+COPY --from=build /usr/local/bundle /usr/local/bundle
+
+# Copy app
 COPY --from=build /rails /rails
 
-# Create non-root user
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
+# Create non-root user & fix permissions
+RUN groupadd -g 1000 rails && \
+    useradd -u 1000 -g 1000 -m -s /bin/bash rails && \
+    mkdir -p /rails/tmp /rails/log /rails/storage && \
+    chown -R rails:rails /rails
 
-USER 1000:1000
+USER rails
 
-# Entrypoint prepares the database
+# Entrypoint prepares DB/migrations
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start the server by default
 EXPOSE 3000
+
 CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
