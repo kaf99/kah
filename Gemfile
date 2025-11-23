@@ -8,7 +8,7 @@ gem "puma", ">= 5.0"
 # Payment Integrations
 gem "spree_stripe"
 gem "spree_paypal_checkout", "~> 0.5"
-gem 'spree_razorpay', git: 'https://github.com/kaf99/spree_razorpay.git', branch: 'main'
+gem 'spree_razorpay_checkout', github: 'kaf99/spree_razorpay', branch: 'main'
 gem 'razorpay'
 gem 'spree_product_reviews', git: 'https://github.com/kaf99/spree_product_reviews.git', branch: 'main'
 
