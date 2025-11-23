@@ -2,7 +2,6 @@ module Spree
 class RazorpayController < StoreController
 skip_before_action :verify_authenticity_token
 
-```
 include Spree::RazorPay
 
 # Step 1: Create Razorpay Order
@@ -124,7 +123,6 @@ def completion_route
     spree.order_path(order)
   end
 end
-```
 
 end
 end
