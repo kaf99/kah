@@ -9,7 +9,7 @@ gem "puma", ">= 5.0"
 gem "spree_stripe"
 gem "spree_paypal_checkout", "~> 0.5"
 
-gem 'spree_razorpay_checkout', github: 'kaf99/spree_razorpay', branch: 'main'
+gem 'spree_razorpay_checkout', github: 'kaf99/spree_razorpay', branch: 'fix-order-decorator'
 gem 'razorpay'
 gem 'spree_product_reviews', git: 'https://github.com/kaf99/spree_product_reviews.git', branch: 'main'
 
