@@ -26,7 +26,13 @@ Rails.application.routes.draw do
         router_name: :spree
       )
     end
-
+    
+    # 👉 Razorpay routes
+    namespace :razorpay do
+      post "checkout", to: "razorpay#checkout", as: :checkout
+      post "callback", to: "razorpay#callback", as: :callback
+    end
+    
     # Admin authentication
     devise_for(
       Spree.admin_user_class.model_name.singular_route_key,
