@@ -1,19 +1,30 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
-  # ✅ Health check endpoint
+  # ---------------------------------------------------------
+  # Health check
+  # ---------------------------------------------------------
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # ✅ Sidekiq dashboard
+  # ---------------------------------------------------------
+  # Sidekiq dashboard
+  # ---------------------------------------------------------
   mount Sidekiq::Web => "/sidekiq"
 
-  # Callback endpoint for Spree to process order
+  # ---------------------------------------------------------
+  # Razorpay callback (webhook)
+  # ---------------------------------------------------------
   post "/razorpay/callback", to: "spree/razorpay#razor_response"
 
-  # ✅ Spree routes and authentication setup
+  # ---------------------------------------------------------
+  # Spree Auth Routes (User + Admin)
+  # ---------------------------------------------------------
   Spree::Core::Engine.add_routes do
-    # Storefront user authentication
-    scope '(:locale)', locale: /#{Spree.available_locales.join('|')}/, defaults: { locale: nil } do
+    # Storefront User Authentication (for customers)
+    scope '(:locale)',
+      locale: /#{Spree.available_locales.join('|')}/,
+      defaults: { locale: nil } do
+
       devise_for(
         Spree.user_class.model_name.singular_route_key,
         class_name: Spree.user_class.to_s,
@@ -26,8 +37,8 @@ Rails.application.routes.draw do
         router_name: :spree
       )
     end
-    
-    # Admin authentication
+
+    # Admin Authentication
     devise_for(
       Spree.admin_user_class.model_name.singular_route_key,
       class_name: Spree.admin_user_class.to_s,
@@ -41,9 +52,13 @@ Rails.application.routes.draw do
     )
   end
 
-  # ✅ Mount Spree engine (main storefront + admin)
+  # ---------------------------------------------------------
+  # Mount Spree
+  # ---------------------------------------------------------
   mount Spree::Core::Engine, at: '/'
 
-  # ✅ Default root path (Spree home)
+  # ---------------------------------------------------------
+  # Root path → Spree home
+  # ---------------------------------------------------------
   root "spree/home#index"
 end
