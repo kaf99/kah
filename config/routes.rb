@@ -7,10 +7,6 @@ Rails.application.routes.draw do
   # ✅ Sidekiq dashboard
   mount Sidekiq::Web => "/sidekiq"
 
-  # ✅ Razorpay payment routes
-  # Checkout endpoint for gateway
-  post "/razorpay/checkout", to: "razorpay#checkout"
-
   # Callback endpoint for Spree to process order
   post "/razorpay/callback", to: "spree/razorpay#razor_response"
 
