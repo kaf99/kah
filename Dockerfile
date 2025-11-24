@@ -1,8 +1,5 @@
 # syntax = docker/dockerfile:1
 
-############################################################
-# BASE IMAGE (Ruby + system dependencies)
-############################################################
 ARG RUBY_VERSION=3.3.0
 FROM ruby:$RUBY_VERSION-slim AS base
 
@@ -72,10 +69,13 @@ RUN groupadd -g 1000 rails && \
     chown -R rails:rails /rails
 
 USER rails
+WORKDIR /rails
 
-# Entrypoint prepares DB/migrations
+# Healthcheck so Traefik knows container is ready
+HEALTHCHECK --interval=10s --timeout=3s CMD curl -f http://localhost:3000 || exit 1
+
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 EXPOSE 3000
 
-CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
+CMD ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3000", "-e", "production"]
