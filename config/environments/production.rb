@@ -19,8 +19,8 @@ Rails.application.configure do
   # config.active_storage.service = :backblaze
 
   # SSL configuration
-  config.assume_ssl = true
-  config.force_ssl = true
+  config.assume_ssl = false
+  config.force_ssl = false
 
   # Logging setup
   config.log_tags = [:request_id]
@@ -49,7 +49,7 @@ Rails.application.configure do
   # Host configuration
   config.action_controller.asset_host = "https://www.nozfragrances.com"
   Rails.application.routes.default_url_options[:host] = "www.nozfragrances.com"
-  Rails.application.routes.default_url_options[:protocol] = "https"
+  Rails.application.routes.default_url_options[:protocol] = "http"
 
   # I18n fallback
   config.i18n.fallbacks = true
