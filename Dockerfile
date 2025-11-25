@@ -72,7 +72,8 @@ USER rails
 WORKDIR /rails
 
 # Healthcheck so Traefik knows container is ready
-HEALTHCHECK --interval=10s --timeout=3s CMD curl -f http://localhost:3000 || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:3000/up || exit 1
 
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
